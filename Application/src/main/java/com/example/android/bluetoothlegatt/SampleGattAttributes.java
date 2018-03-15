@@ -30,6 +30,12 @@ public class SampleGattAttributes {
 
     static {
         attributes.put("00001800-0000-1000-8000-00805f9b34fb", "Generic Access Service");
+        attributes.put("00002a00-0000-1000-8000-00805f9b34fb", "Device Name");
+        attributes.put("00002a01-0000-1000-8000-00805f9b34fb", "Appearance");
+        attributes.put("00002a02-0000-1000-8000-00805f9b34fb", "Peripheral Privacy Flag");
+        attributes.put("00002a03-0000-1000-8000-00805f9b34fb", "Reconnection Address");
+        attributes.put("00002a04-0000-1000-8000-00805f9b34fb", "Peripheral Preferred Connection Parameters");
+
         attributes.put("00001801-0000-1000-8000-00805f9b34fb", "Generic Attribute Service");
 
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
