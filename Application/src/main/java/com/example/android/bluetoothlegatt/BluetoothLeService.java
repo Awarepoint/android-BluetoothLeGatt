@@ -91,6 +91,54 @@ public class BluetoothLeService extends Service {
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
+        public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+            super.onPhyUpdate(gatt, txPhy, rxPhy, status);
+            Log.i(TAG, String.format("onPhyUpdate: txPhy=%d, rxPhy=%d, status=%d", txPhy, rxPhy, status));
+        }
+
+        @Override
+        public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+            super.onPhyRead(gatt, txPhy, rxPhy, status);
+            Log.i(TAG, String.format("onPhyRead: txPhy=%d, rxPhy=%d, status=%d", txPhy, rxPhy, status));
+        }
+
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+            Log.i(TAG, String.format("onCharacteristicWrite: characteristic=%s, status=%d", characteristic.toString(), status));
+        }
+
+        @Override
+        public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            super.onDescriptorRead(gatt, descriptor, status);
+            Log.i(TAG, String.format("onDescriptorRead: descriptor=%s, status=%d", descriptor.toString(), status));
+        }
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            super.onDescriptorWrite(gatt, descriptor, status);
+            Log.i(TAG, String.format("onDescriptorWrite: descriptor=%s, status=%d", descriptor.toString(), status));
+        }
+
+        @Override
+        public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+            super.onReliableWriteCompleted(gatt, status);
+            Log.i(TAG, String.format("onReliableWriteCompleted: status=%d", status));
+        }
+
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            super.onReadRemoteRssi(gatt, rssi, status);
+            Log.i(TAG, String.format("onReadRemoteRssi: rssi=%d, status=%d", rssi, status));
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            super.onMtuChanged(gatt, mtu, status);
+            Log.i(TAG, String.format("onMtuChanged: mtu=%d, status=%d", mtu, status));
+        }
+
+        @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
             if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -242,20 +290,10 @@ public class BluetoothLeService extends Service {
     }
 
     private boolean connect(Context context, BluetoothDevice bluetoothDevice) {
-        // Previously connected device.  Try to reconnect.
-        if (mBluetoothDeviceAddress != null && bluetoothDevice.getAddress().equals(mBluetoothDeviceAddress)
-                && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            if (mBluetoothGatt.connect()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         mBluetoothGatt = bluetoothDevice.connectGatt(context, false, mGattCallback);
+        mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = bluetoothDevice.getAddress();
 
